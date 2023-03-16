@@ -1,43 +1,138 @@
+
+
 import dotenv from 'dotenv'
 import fastify, { FastifyInstance } from 'fastify'
+import { FromSchema } from 'json-schema-to-ts'
+import { createClient } from 'redis';
 import { ChatCompletionRequestMessage } from 'openai'
 
-import { chatCompletionRequestMessage } from './schemas'
+import { chatCompletionRequestMessage, headersSchemaInter, querystringSchema } from './schemas'
+import OPEN_AI from './utils/openai'
+import Queue from "bee-queue"
 
 // 使用 .env 配置
 dotenv.config()
 
-const server: FastifyInstance = fastify()
+const server: FastifyInstance = fastify({ logger: true })
 
-server.post<{ Body: ChatCompletionRequestMessage[] }>(
-  '/gpt-3.5-turbo',
-  {
-    schema: {
-      body: chatCompletionRequestMessage,
-      response: {
-        201: {
-          type: 'string',
-        },
-      },
-    },
-  },
-  async (request, reply): Promise<void> => {
-    /*
-      request.body has type
-      {
-      [x: string]: unknown;
-      description?: string;
-      done?: boolean;
-      name: string;
+// Demo
+// server.get<{
+//   Querystring: FromSchema<typeof querystringSchema>,
+//   // Headers: FromSchema<typeof headersSchemaInter>
+// }>('/demo-get', {
+//   schema: {
+//     querystring: querystringSchema,
+//     // headers: headersSchemaInter
+//   },
+//   preValidation: (request, reply, done) => {
+//     const { username, password } = request.query
+//     done(username !== 'admin' ? new Error('Must be admin') : undefined)
+//   }
+// }, async (request, reply) => {
+//   // const customerHeader = request.headers['h-Custom']
+//   return `logged in!`
+// })
+
+// gpt-3.5-turbo
+// server.post<{ Body: ChatCompletionRequestMessage[] }>(
+//   '/gpt-3.5-turbo',
+//   {
+//     schema: {
+//       body: chatCompletionRequestMessage,
+//       response: {
+//         201: {
+//           type: 'string',
+//         },
+//       },
+//     },
+//   },
+//   async (request, reply): Promise<void> => {
+//     try {
+//       const messages = request.body // will not throw type error
+//       const response = await OPEN_AI.createChatCompletion({
+//         model: 'gpt-3.5-turbo',
+//         messages,
+//         temperature: 0.1,
+//         max_tokens: 256,
+//         top_p: 1.0,
+//         frequency_penalty: 0.0,
+//         presence_penalty: 0.0,
+//       })
+
+//       if (response.status === 200) {
+//         response.data.choices[0].message &&
+//           reply
+//             .status(200)
+//             .header('Content-Type', 'application/json; charset=utf-8')
+//             .send({
+//               message: response.data.choices[0].message
+//             })
+//       } else {
+//         reply
+//           .status(201)
+//           .header('Content-Type', 'application/json; charset=utf-8')
+//           .send({
+//             message: response.request.data.error.message
+//           })
+//       }
+
+//     } catch (error) {
+//       reply.status(500).send(error)
+//     }
+
+//   }
+// )
+
+const sharedConfig = { url: process.env.REDIS_URL }
+
+const client = createClient(sharedConfig);
+
+const _createChatCompletion = async (message: string, channel: string) => {
+  try {
+    /**
+     * message: {
+     * roomID: string,
+     * messages: [{role: .., content: ..}]}
+     */
+    const _message = JSON.parse(message)
+    const roomID = _message.roomID
+    const messages = _message.messages
+    const response = await OPEN_AI.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages,
+      temperature: 0.1,
+      max_tokens: 256,
+      top_p: 1.0,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
+    })
+
+    if (response.status === 200) {
+      if (response.data.choices[0].message) {
+        await client.lPush(`GPT_035_RESPONSE_${roomID}`, response.data.choices[0].message as unknown as string);
       }
-    */
+    } else {
+      console.error(response.request.data.error.message)
+      // reply
+      //   .status(201)
+      //   .header('Content-Type', 'application/json; charset=utf-8')
+      //   .send({
+      //     message: response.request.data.error.message
+      //   })
+    }
 
-    const prompts = request.body // will not throw type error
-
-    reply.status(201).send()
+  } catch (error) {
+    // reply.status(500).send(error)
+    console.error(JSON.stringify(error))
   }
-)
+}
 
-server.listen({ port: 8088 }, () => {
-  console.log('running')
+
+const port = 8088
+server.listen({ port }, async () => {
+
+  await client.connect();
+
+  // await client.subscribe('GPT_035_REQUEST', _createChatCompletion);
+  console.log(`running on: http://127.0.0.1:${port}`)
 })

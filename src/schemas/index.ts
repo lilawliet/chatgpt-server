@@ -2,8 +2,7 @@ import { asConst } from 'json-schema-to-ts'
 
 export type Role = 'system' | 'user' | 'assistant'
 
-// 写法一
-
+// gpt3.5
 const role = asConst({ enum: ['system', 'user', 'assistant'] })
 export const chatCompletionRequestMessage = asConst({
   type: 'object',
@@ -12,6 +11,27 @@ export const chatCompletionRequestMessage = asConst({
     content: { type: 'string' },
   },
   required: ['role', 'content'],
+})
+
+// 写法一 demo-get
+export const querystringSchema = asConst({
+  type: 'object',
+  properties: {
+    username: { type: 'string' },
+    password: { type: 'string' },
+  },
+  "additionalProperties": false,
+  "required": ["username"]
+})
+
+// demo-get
+export const headersSchemaInter = asConst({
+  type: 'object',
+  properties: {
+    "h-Custom": { type: 'string' },
+  },
+  "additionalProperties": false,
+  "required": ["h-Custom"]
 })
 
 // // 写法二, demo

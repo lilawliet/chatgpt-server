@@ -1,5 +1,17 @@
-## fastify + typescript + json-schema-to-ts + eslint + prettier
+# ChatGPT node server 
 
+
+### fastify + typescript + json-schema-to-ts + eslint + prettier
+
+---
+## to start
+```
+yarn build 
+yarn start
+```
+
+---
+## set up
 [init](https://www.fastify.io/docs/latest/Reference/TypeScript/)
 
 ```
@@ -22,10 +34,10 @@ npm i -D json-schema-to-ts
 
 ```
 
-[eslint](https://eslint.org/docs/latest/use/getting-started)
-[eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort/)
-[prettier](https://prettier.io/docs/en/install.html)
-[eslint-config-prettier](https://github.com/prettier/eslint-config-prettier#installation)
+[eslint](https://eslint.org/docs/latest/use/getting-started)<br>
+[eslint-plugin-simple-import-sort](https://github.com/lydell/eslint-plugin-simple-import-sort/)<br>
+[prettier](https://prettier.io/docs/en/install.html)<br>
+[eslint-config-prettier](https://github.com/prettier/eslint-config-prettier#installation)<br>
 
 ```
 # https://eslint.org/docs/latest/use/getting-started
