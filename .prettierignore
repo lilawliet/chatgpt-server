@@ -1,0 +1,11 @@
+# Ignore artifacts:
+.git
+.vscode
+.eslintrc.cjs
+.prettierrc.json
+.prettierignore
+package-lock.json
+package.json
+dist
+node_modules
+README.md
