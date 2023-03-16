@@ -12,7 +12,7 @@ module.exports = {
   ],
   "overrides": [
     {
-      // json文件 不检查 no-unused-expressions
+      // 不检查 no-unused-expressions
       "files": ["*.json", "*.cjs"],
       "rules": {
         "no-unused-expressions": "off"
