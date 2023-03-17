@@ -23,6 +23,7 @@ npm i -D typescript @types/node
 npx tsc --init
 
 ...
+[json-schema-to-ts](https://www.npmjs.com/package/json-schema-to-ts)
 npm i -D json-schema-to-ts
 
 ...

@@ -13,6 +13,15 @@ export const chatCompletionRequestMessage = asConst({
   required: ['role', 'content'],
 })
 
+export const reqGPT035Turbo = {
+  type: 'object',
+  properties: {
+    prompts: { type: 'array', items: chatCompletionRequestMessage },
+  },
+  additionalProperties: false,
+  required: ['prompts'],
+} as const
+
 // 写法一 demo-get
 export const querystringSchema = asConst({
   type: 'object',
@@ -20,18 +29,18 @@ export const querystringSchema = asConst({
     username: { type: 'string' },
     password: { type: 'string' },
   },
-  "additionalProperties": false,
-  "required": ["username"]
+  additionalProperties: false,
+  required: ['username'],
 })
 
 // demo-get
 export const headersSchemaInter = asConst({
   type: 'object',
   properties: {
-    "h-Custom": { type: 'string' },
+    'h-Custom': { type: 'string' },
   },
-  "additionalProperties": false,
-  "required": ["h-Custom"]
+  additionalProperties: false,
+  required: ['h-Custom'],
 })
 
 // // 写法二, demo
