@@ -125,7 +125,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 // }
 
 const PORT = 8088
-const HOST = '0.0.0.0'
+const HOST = '192.168.0.105'
 server.listen({ port: PORT, host: HOST }, (err, address) => {
   if (err) {
     console.error(err)
