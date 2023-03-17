@@ -61,7 +61,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
     try {
       const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
       const response = await OPEN_AI.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt_035_turbo',
         messages,
         temperature: 0.1,
         max_tokens: 256,
