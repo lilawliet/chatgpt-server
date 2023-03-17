@@ -35,6 +35,11 @@ server.get<{
   }
 )
 
+// 系统预设
+export const GPT3_PROMPT_HEADER = `
+Bessage 是一个集成闪电网络钱包、发送推文及聊天功能的应用。以下是与AI助手的对话, 只需要回答问题不需要补全对话内容。助理乐于助人、富有创意、聪明而且非常友好。
+`
+
 // gpt-3.5-turbo
 server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   '/gpt_035_turbo',
@@ -60,7 +65,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   async (request, reply): Promise<void> => {
     try {
       const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
-      console.log(messages)
+      messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
       const response = await OPEN_AI.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages,
@@ -91,45 +96,10 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   }
 )
 
-// const sharedConfig = { url: process.env.REDIS_URL }
-// const client = createClient(sharedConfig)
-// const _createChatCompletion = async (message: string, channel: string) => {
-//   try {
-//     /**
-//      * message: {
-//      * roomID: string,
-//      * messages: [{role: .., content: ..}]}
-//      */
+const port = process.env.PORT as unknown as number
+const host = process.env.HOST
 
-//     const _message = JSON.parse(message)
-//     const roomID = _message.roomID
-//     const messages = _message.messages
-//     const response = await OPEN_AI.createChatCompletion({
-//       model: 'gpt-3.5-turbo',
-//       messages,
-//       temperature: 0.1,
-//       max_tokens: 256,
-//       top_p: 1.0,
-//       frequency_penalty: 0.0,
-//       presence_penalty: 0.0,
-//     })
-
-//     if (response.status === 200) {
-//       if (response.data.choices[0].message) {
-//         await client.lPush(`GPT_035_RESPONSE_${roomID}`, response.data.choices[0].message as unknown as string)
-//       }
-//     } else {
-//       console.error(response.request.data.error.message)
-//     }
-//   } catch (error) {
-//     // reply.status(500).send(error)
-//     console.error(JSON.stringify(error))
-//   }
-// }
-
-const PORT = 8088
-const HOST = '192.168.0.105'
-server.listen({ port: PORT, host: HOST }, (err, address) => {
+server.listen({ port, host }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)

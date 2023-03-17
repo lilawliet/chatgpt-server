@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node .\\dist\\index.js",
+    "start": "node dist/index.js",
     "_lint": "eslint \"src/**/*.{js,json,md,ts}\"",
     "_lint:fix": "eslint --fix \"src/**/*.{js,json,md,ts}\"",
     "_prettier": "prettier --write \"src/**/*.{js,json,md,ts}\""
