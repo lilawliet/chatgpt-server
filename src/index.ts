@@ -37,7 +37,7 @@ server.get<{
 
 // gpt-3.5-turbo
 server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
-  '/gpt-3.5-turbo',
+  '/gpt_035_turbo',
   {
     schema: {
       body: reqGPT035Turbo,
@@ -61,7 +61,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
     try {
       const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
       const response = await OPEN_AI.createChatCompletion({
-        model: 'gpt_035_turbo',
+        model: 'gpt-3.5-turbo',
         messages,
         temperature: 0.1,
         max_tokens: 256,
