@@ -60,6 +60,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   async (request, reply): Promise<void> => {
     try {
       const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
+      console.log(messages)
       const response = await OPEN_AI.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages,
@@ -70,6 +71,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
         presence_penalty: 0.0,
       })
 
+      console.log(response)
       if (response.status === 200) {
         response.data.choices[0].message &&
           reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
