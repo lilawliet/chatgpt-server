@@ -74,16 +74,16 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
         response.data.choices[0].message &&
           reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
             code: 200,
-            message: response.data.choices[0].message,
+            msg: response.data.choices[0].message,
           })
       } else {
         reply.status(201).header('Content-Type', 'application/json; charset=utf-8').send({
           code: 201,
-          message: response.request.data.error.message,
+          msg: response.request.data.error.message,
         })
       }
     } catch (error) {
-      reply.status(500).send({ code: 500, message: JSON.stringify(error) })
+      reply.status(500).send({ code: 500, msg: JSON.stringify(error) })
     }
   }
 )
