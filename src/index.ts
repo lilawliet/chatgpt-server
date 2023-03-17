@@ -125,13 +125,11 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 // }
 
 const PORT = 8088
-const HOST = '192.168.8.221'
+const HOST = '0.0.0.0'
 server.listen({ port: PORT, host: HOST }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)
   }
   console.log(`Server listening at ${address}`)
-
-  console.log(`running on: http://${HOST}:${PORT}`)
 })
