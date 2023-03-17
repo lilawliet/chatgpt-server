@@ -85,6 +85,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
         })
       }
     } catch (error) {
+      console.error(error)
       reply.status(500).send({ code: 500, msg: JSON.stringify(error) })
     }
   }
