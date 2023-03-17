@@ -9,7 +9,7 @@ import OPEN_AI from './utils/openai'
 // 使用 .env 配置
 dotenv.config()
 
-const server: FastifyInstance = fastify({ logger: true })
+const server: FastifyInstance = fastify({ logger: true, keepAliveTimeout: 15000 })
 
 // Demo
 server.get<{
