@@ -1,0 +1,10 @@
+version: '3'
+services:
+  chatgpt_server:
+    build: .
+    image: hpw/chatgpt:v0.1
+    ports:
+      - '8088:8088'
+    restart: always
+    labels:
+      - 'name=chatgpt_server'
