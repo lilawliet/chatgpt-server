@@ -10,6 +10,9 @@ import OPEN_AI from './utils/openai'
 dotenv.config()
 
 const server: FastifyInstance = fastify({ logger: true, keepAliveTimeout: 15000 })
+server.register(cors, {
+  origin: ['*'],
+})
 
 // Demo
 server.get<{
@@ -155,3 +158,10 @@ server.listen({ port, host }, (err, address) => {
   }
   console.log(`Server listening at ${address}`)
 })
+function cors(
+  instance: FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProvider>,
+  opts: { origin: string[] },
+  done: (err?: Error | undefined) => void
+): void {
+  throw new Error('Function not implemented.')
+}
