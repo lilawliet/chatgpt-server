@@ -1,3 +1,4 @@
+import cors from '@fastify/cors'
 import dotenv from 'dotenv'
 import fastify, { FastifyInstance } from 'fastify'
 import { FromSchema } from 'json-schema-to-ts'
@@ -158,10 +159,3 @@ server.listen({ port, host }, (err, address) => {
   }
   console.log(`Server listening at ${address}`)
 })
-function cors(
-  instance: FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProvider>,
-  opts: { origin: string[] },
-  done: (err?: Error | undefined) => void
-): void {
-  throw new Error('Function not implemented.')
-}
