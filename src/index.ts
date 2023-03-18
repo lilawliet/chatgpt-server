@@ -109,7 +109,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 
       if (response.status === 200) {
         response.data.choices[0].message &&
-          reply.status(0).header('Content-Type', 'application/json; charset=utf-8').send({
+          reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
             StatusCode: 0,
             Body: response.data.choices[0].message,
           })
