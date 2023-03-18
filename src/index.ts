@@ -110,24 +110,29 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 
       if (response.status === 200) {
         response.data.choices[0].message &&
-          reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
-            code: 200,
-            msg: response.data.choices[0].message,
-          })
+          reply
+            .status(0)
+            .header('Content-Type', 'application/json; charset=utf-8')
+            .send({
+              res: {
+                StatusCode: 0,
+                Body: response.data.choices[0].message,
+              },
+            })
       } else {
-        reply.status(201).header('Content-Type', 'application/json; charset=utf-8').send({
-          code: 201,
-          msg: response.request.data.error.message,
-        })
+        reply
+          .status(201)
+          .header('Content-Type', 'application/json; charset=utf-8')
+          .send({
+            res: {
+              StatusCode: 201,
+              Body: response.request.data.error.message,
+            },
+          })
       }
     } catch (error) {
       console.error(error)
-      reply
-        .headers({
-          'Access-Control-Allow-Origin': '*',
-        })
-        .status(500)
-        .send({ code: 500, msg: JSON.stringify(error) })
+      reply.status(500).send({ res: { StatusCode: 500, Body: JSON.stringify(error) } })
     }
   }
 )
