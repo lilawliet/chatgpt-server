@@ -1,19 +1,24 @@
-import cors from '@fastify/cors'
 import dotenv from 'dotenv'
 import fastify, { FastifyInstance } from 'fastify'
 import { FromSchema } from 'json-schema-to-ts'
 import { ChatCompletionRequestMessage } from 'openai'
 
-import { chatCompletionRequestMessage, querystringSchema, reqGPT035Turbo } from './schemas'
-import OPEN_AI from './utils/openai'
+import { querystringSchema, reqGPT035Turbo } from './schemas'
 
-// 使用 .env 配置
+// 使用 .env 配置,要放在最前面
 dotenv.config()
 
+/**
+ * 巨坑： OPEN_AI 初始化用到 process.env...., 需要在 dotenv.config() 之后执行
+ */
+
+import OPEN_AI from './utils/openai'
+
 const server: FastifyInstance = fastify({ logger: true, keepAliveTimeout: 15000 })
-server.register(cors, {
-  origin: ['*'],
-})
+
+// server.register(cors, {
+//   origin: ['*'],
+// })
 
 // Demo
 server.get<{
@@ -58,20 +63,10 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
       messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
       console.log('message', messages)
 
-      reply
-        .headers({
-          'Access-Control-Allow-Origin': '*',
-        })
-        .status(200)
-        .send({ code: 200, msg: 'ok' })
+      reply.status(200).send({ code: 200, msg: 'ok' })
     } catch (error) {
       console.error(error)
-      reply
-        .headers({
-          'Access-Control-Allow-Origin': '*',
-        })
-        .status(500)
-        .send({ code: 500, msg: JSON.stringify(error) })
+      reply.status(500).send({ code: 500, msg: JSON.stringify(error) })
     }
   }
 )
@@ -115,27 +110,15 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 
       if (response.status === 200) {
         response.data.choices[0].message &&
-          reply
-            .headers({
-              'Access-Control-Allow-Origin': '*',
-            })
-            .status(200)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({
-              code: 200,
-              msg: response.data.choices[0].message,
-            })
+          reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
+            code: 200,
+            msg: response.data.choices[0].message,
+          })
       } else {
-        reply
-          .headers({
-            'Access-Control-Allow-Origin': '*',
-          })
-          .status(201)
-          .header('Content-Type', 'application/json; charset=utf-8')
-          .send({
-            code: 201,
-            msg: response.request.data.error.message,
-          })
+        reply.status(201).header('Content-Type', 'application/json; charset=utf-8').send({
+          code: 201,
+          msg: response.request.data.error.message,
+        })
       }
     } catch (error) {
       console.error(error)
