@@ -14,7 +14,7 @@ dotenv.config()
 
 import OPEN_AI from './utils/openai'
 
-const server: FastifyInstance = fastify({ logger: true, keepAliveTimeout: 15000 })
+const server: FastifyInstance = fastify({ logger: true })
 
 // server.register(cors, {
 //   origin: ['*'],
