@@ -97,7 +97,6 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
     try {
       const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
       messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
-      console.log('message', messages)
       const response = await OPEN_AI.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages,
@@ -110,29 +109,19 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
 
       if (response.status === 200) {
         response.data.choices[0].message &&
-          reply
-            .status(0)
-            .header('Content-Type', 'application/json; charset=utf-8')
-            .send({
-              res: {
-                StatusCode: 0,
-                Body: response.data.choices[0].message,
-              },
-            })
-      } else {
-        reply
-          .status(201)
-          .header('Content-Type', 'application/json; charset=utf-8')
-          .send({
-            res: {
-              StatusCode: 201,
-              Body: response.request.data.error.message,
-            },
+          reply.status(0).header('Content-Type', 'application/json; charset=utf-8').send({
+            StatusCode: 0,
+            Body: response.data.choices[0].message,
           })
+      } else {
+        reply.status(201).header('Content-Type', 'application/json; charset=utf-8').send({
+          StatusCode: 201,
+          Body: response.request.data.error.message,
+        })
       }
     } catch (error) {
       console.error(error)
-      reply.status(500).send({ res: { StatusCode: 500, Body: JSON.stringify(error) } })
+      reply.status(500).send({ StatusCode: 500, Body: JSON.stringify(error) })
     }
   }
 )
