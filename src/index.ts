@@ -41,11 +41,11 @@ Bessage 是一个集成闪电网络钱包、发送推文及聊天功能的应用
 `
 
 // gpt-3.5-turbo
-server.post<{ Body: FromSchema<typeof chatCompletionRequestMessage> }>(
+server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   '/gpt_035_turbo',
   {
     schema: {
-      body: chatCompletionRequestMessage,
+      body: reqGPT035Turbo,
       response: {
         // 200: {
         //   code: 'integer',
@@ -64,7 +64,7 @@ server.post<{ Body: FromSchema<typeof chatCompletionRequestMessage> }>(
   },
   async (request, reply): Promise<void> => {
     try {
-      const messages = request.body as unknown as ChatCompletionRequestMessage[] // will not throw type error
+      const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
       messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
       console.log('message', messages)
       const response = await OPEN_AI.createChatCompletion({
