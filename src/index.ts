@@ -66,6 +66,7 @@ server.post<{ Body: FromSchema<typeof chatCompletionRequestMessage> }>(
     try {
       const messages = request.body as unknown as ChatCompletionRequestMessage[] // will not throw type error
       messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
+      console.log('message', messages)
       const response = await OPEN_AI.createChatCompletion({
         model: 'gpt-3.5-turbo',
         messages,
@@ -76,7 +77,6 @@ server.post<{ Body: FromSchema<typeof chatCompletionRequestMessage> }>(
         presence_penalty: 0.0,
       })
 
-      console.log(response)
       if (response.status === 200) {
         response.data.choices[0].message &&
           reply.status(200).header('Content-Type', 'application/json; charset=utf-8').send({
