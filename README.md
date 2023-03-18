@@ -4,11 +4,22 @@
 ### fastify + typescript + json-schema-to-ts + eslint + prettier
 
 ---
-## to start
+## development
 ```
 yarn build 
 yarn start
 ```
+
+---
+## production
+```
+# docker image # at this folder
+docker-compose build
+
+# docker container  # at deploy folder
+docker-compose up chatgpt_server
+```
+
 
 ---
 ## set up

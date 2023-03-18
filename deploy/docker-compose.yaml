@@ -1,0 +1,21 @@
+version: '3'
+services:
+  chatgpt_server:
+    image: hpw/chatgpt:v0.1 # 需要修改
+    ports:
+      - '0.0.0.0:8088:8088'
+    restart: always
+    environment:
+      LISTEN: 0.0.0.0:8088
+    networks:
+      - external_network
+      - internal_network
+      - default
+    volumes:
+      - ./ChatGPT-server:/data # 需要修改
+
+networks:
+  default:
+  external_network:
+  internal_network:
+    internal: true

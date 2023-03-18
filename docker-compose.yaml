@@ -2,7 +2,7 @@ version: '3'
 services:
   chatgpt_server:
     build: .
-    image: hpw/chatgpt:v0.1
+    image: hpw/chatgpt:v0.1 # 需要修改
     ports:
       - '8088:8088'
     restart: always
