@@ -40,6 +40,28 @@ export const GPT3_PROMPT_HEADER = `
 Bessage 是一个集成闪电网络钱包、发送推文及聊天功能的应用。以下是与AI助手的对话, 只需要回答问题不需要补全对话内容。助理乐于助人、富有创意、聪明而且非常友好。
 `
 
+server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
+  '/test-post',
+  {
+    schema: {
+      body: reqGPT035Turbo,
+      response: {},
+    },
+  },
+  async (request, reply): Promise<void> => {
+    try {
+      const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
+      messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
+      console.log('message', messages)
+
+      reply.status(500).send({ code: 200, msg: 'ok' })
+    } catch (error) {
+      console.error(error)
+      reply.status(500).send({ code: 500, msg: JSON.stringify(error) })
+    }
+  }
+)
+
 // gpt-3.5-turbo
 server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   '/gpt_035_turbo',
