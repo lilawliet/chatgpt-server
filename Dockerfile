@@ -3,6 +3,8 @@ FROM node:16
 # Create app directory
 WORKDIR /
 
+COPY . .
+
 RUN yarn 
 RUN yarn build
 
