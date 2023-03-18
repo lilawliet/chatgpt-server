@@ -3,7 +3,7 @@ import fastify, { FastifyInstance } from 'fastify'
 import { FromSchema } from 'json-schema-to-ts'
 import { ChatCompletionRequestMessage } from 'openai'
 
-import { querystringSchema, reqGPT035Turbo } from './schemas'
+import { chatCompletionRequestMessage, querystringSchema, reqGPT035Turbo } from './schemas'
 import OPEN_AI from './utils/openai'
 
 // 使用 .env 配置
@@ -41,11 +41,11 @@ Bessage 是一个集成闪电网络钱包、发送推文及聊天功能的应用
 `
 
 // gpt-3.5-turbo
-server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
+server.post<{ Body: FromSchema<typeof chatCompletionRequestMessage> }>(
   '/gpt_035_turbo',
   {
     schema: {
-      body: reqGPT035Turbo,
+      body: chatCompletionRequestMessage,
       response: {
         // 200: {
         //   code: 'integer',
@@ -64,7 +64,7 @@ server.post<{ Body: FromSchema<typeof reqGPT035Turbo> }>(
   },
   async (request, reply): Promise<void> => {
     try {
-      const messages = request.body.prompts as ChatCompletionRequestMessage[] // will not throw type error
+      const messages = request.body as unknown as ChatCompletionRequestMessage[] // will not throw type error
       messages.unshift({ role: 'system', content: GPT3_PROMPT_HEADER })
       const response = await OPEN_AI.createChatCompletion({
         model: 'gpt-3.5-turbo',
