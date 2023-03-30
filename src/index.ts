@@ -16,6 +16,17 @@ import OPEN_AI from './utils/openai'
 
 const server: FastifyInstance = fastify({ logger: true, keepAliveTimeout: 15000 })
 
+// 解析 JSON 格式请求
+server.addContentTypeParser('application/json', { parseAs: 'string' }, function (req, body, done) {
+  try {
+    const json = JSON.parse(body as string)
+    done(null, json)
+  } catch (err: any) {
+    err.statusCode = 400
+    done(err, undefined)
+  }
+})
+
 // server.register(cors, {
 //   origin: ['*'],
 // })
